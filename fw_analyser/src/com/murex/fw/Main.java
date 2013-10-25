@@ -2,7 +2,6 @@ package com.murex.fw;
 
 import com.murex.fw.client.Client;
 import com.murex.fw.server.Server;
-import com.murex.fw.server.ServerException;
 
 import java.io.IOException;
 

@@ -1,7 +1,5 @@
 package com.murex.fw;
 
-import com.murex.fw.MessageType;
-
 public class DiagnosticMessage
 {
     private long timestamp;

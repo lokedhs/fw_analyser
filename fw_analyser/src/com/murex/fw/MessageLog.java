@@ -1,6 +1,5 @@
 package com.murex.fw;
 
-import java.io.IOException;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 
