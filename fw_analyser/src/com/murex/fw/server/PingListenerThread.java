@@ -22,7 +22,7 @@ public class PingListenerThread extends Thread
         while( true ) {
             try {
                 final Socket s = socket.accept();
-                Thread t = new PingThread( s );
+                Thread t = new ServerPingThread( s );
                 t.start();
             }
             catch( IOException e ) {
@@ -41,11 +41,11 @@ public class PingListenerThread extends Thread
         }
     }
 
-    private class PingThread extends Thread
+    private class ServerPingThread extends Thread
     {
         private final Socket s;
 
-        public PingThread( Socket s ) {
+        public ServerPingThread( Socket s ) {
             this.s = s;
         }
 

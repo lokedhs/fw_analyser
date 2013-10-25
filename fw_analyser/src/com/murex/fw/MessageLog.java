@@ -17,10 +17,13 @@ public class MessageLog
         pushMessage( type, s, null );
     }
 
-    public void pushMessage( MessageType type, String s, IOException e ) {
+    public void pushMessage( MessageType type, String s, Throwable e ) {
         DiagnosticMessage msg = new DiagnosticMessage( type, s, e );
         pending.addLast( msg );
 
-        System.out.printf( "LOG %s: %s%n", name, msg.getText() );
+        System.out.printf( "LOG %s %s: %s%n", msg.getType().toString(), name, msg.getText() );
+        if( e != null ) {
+            e.printStackTrace();
+        }
     }
 }

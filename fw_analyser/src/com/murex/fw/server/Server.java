@@ -1,6 +1,7 @@
 package com.murex.fw.server;
 
 import com.murex.fw.MessageLog;
+import com.murex.fw.MessageType;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -10,14 +11,14 @@ import java.util.Map;
 
 public class Server
 {
-    private static Map<String,CommandHandler> COMMAND_HANDLERS;
+    private static Map<String, CommandHandler> COMMAND_HANDLERS;
 
     private int port;
-    private Map<Integer,PingListenerThread> pingListeners = new HashMap<Integer,PingListenerThread>();
+    private Map<Integer, PingListenerThread> pingListeners = new HashMap<Integer, PingListenerThread>();
     private MessageLog messageLog = new MessageLog( "server" );
 
     static {
-        HashMap<String,CommandHandler> h = new HashMap<String,CommandHandler>();
+        HashMap<String, CommandHandler> h = new HashMap<String, CommandHandler>();
         h.put( "listen", new ListenCommandHandler() );
         h.put( "stopPingListener", new StopListenerHandler() );
         COMMAND_HANDLERS = h;
@@ -30,8 +31,8 @@ public class Server
     public void start() throws ServerException {
         try {
             ServerSocket server = new ServerSocket( port );
-            Socket s = server.accept();
-            controllerLoop( s );
+            Thread t = new ControllerLoopThread( server );
+            t.start();
         }
         catch( IOException e ) {
             throw new ServerException( e );
@@ -84,5 +85,28 @@ public class Server
 
     public MessageLog getMessageLog() {
         return messageLog;
+    }
+
+    private class ControllerLoopThread extends Thread
+    {
+        private final ServerSocket server;
+
+        public ControllerLoopThread( ServerSocket server ) {
+            this.server = server;
+        }
+
+        @Override
+        public void run() {
+            try {
+                Socket s = server.accept();
+                controllerLoop( s );
+            }
+            catch( IOException e ) {
+                messageLog.pushMessage( MessageType.ERROR, "IOException in controller loop", e );
+            }
+            catch( ServerException e ) {
+                messageLog.pushMessage( MessageType.ERROR, "ServerException in controller loop", e );
+            }
+        }
     }
 }

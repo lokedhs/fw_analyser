@@ -20,7 +20,7 @@ class ListenCommandHandler implements CommandHandler
         List<Integer> failedPorts = new ArrayList<Integer>();
         for( int port = startPort ; port < startPort + numPorts ; port++ ) {
             try {
-                server.startPingListener( port );
+                if( port % 2 == 0 ) server.startPingListener( port );
             }
             catch( IOException e ) {
                 server.getMessageLog().pushMessage( MessageType.ERROR, "exception when starting listener on port " + port, e);
