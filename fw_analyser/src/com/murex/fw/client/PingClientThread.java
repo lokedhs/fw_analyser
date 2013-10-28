@@ -41,8 +41,8 @@ public class PingClientThread extends Thread
             }
 
             client.getMessageLog().pushMessage( MessageType.TEST_RESULT, "ping reply on port " + port +
-                    ", startTime: " + startTime + " connectTime: " + connectTime + ", endTime: " + endTime +
-                    ", connectLatency: " + (connectTime - startTime) + ", fullLatency: " + (endTime - startTime) );
+                    " startTime: " + startTime + " connectTime: " + connectTime + " endTime: " + endTime +
+                    " connectLatency: " + (connectTime - startTime) + " fullLatency: " + (endTime - startTime) );
         }
         catch( ConnectException e ) {
             client.getMessageLog().pushMessage( MessageType.TEST_RESULT, "error when connecting, port: " + port + " message: " + e.getMessage() );
