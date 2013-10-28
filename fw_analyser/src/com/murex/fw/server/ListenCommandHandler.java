@@ -4,12 +4,13 @@ import com.murex.fw.MessageType;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 class ListenCommandHandler implements CommandHandler
 {
     @Override
-    public String processCommand( Server server, String[] parts ) throws CommandException {
+    public List<String> processCommand( Server server, String[] parts ) throws CommandException {
         int startPort = Integer.parseInt( parts[1] );
         int numPorts = parts.length > 2 ? Integer.parseInt( parts[2] ) : 1;
 
@@ -35,6 +36,6 @@ class ListenCommandHandler implements CommandHandler
             }
             buf.append( failedPorts.get( i ) );
         }
-        return buf.toString();
+        return Collections.singletonList( buf.toString() );
     }
 }

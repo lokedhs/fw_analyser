@@ -7,6 +7,7 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Server
@@ -21,6 +22,7 @@ public class Server
         HashMap<String, CommandHandler> h = new HashMap<String, CommandHandler>();
         h.put( "listen", new ListenCommandHandler() );
         h.put( "stopPingListener", new StopListenerHandler() );
+        h.put( "messages", new FetchMessagesCommandHandler() );
         COMMAND_HANDLERS = h;
     }
 
@@ -57,9 +59,13 @@ public class Server
             }
 
             try {
-                String result = handler.processCommand( this, parts );
-                out.println( result );
-                out.flush();
+                List<String> result = handler.processCommand( this, parts );
+                if( !result.isEmpty() ) {
+                    for( String row : result ) {
+                        out.println( row );
+                    }
+                    out.flush();
+                }
             }
             catch( CommandException e ) {
                 throw new ServerException( e );

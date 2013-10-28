@@ -1,9 +1,12 @@
 package com.murex.fw.server;
 
+import java.util.Collections;
+import java.util.List;
+
 public class StopListenerHandler implements CommandHandler
 {
     @Override
-    public String processCommand( Server server, String[] parts ) throws CommandException {
+    public List<String> processCommand( Server server, String[] parts ) throws CommandException {
         int startPort = Integer.parseInt( parts[1] );
         int numPorts = parts.length > 2 ? Integer.parseInt( parts[2] ) : 1;
 
@@ -15,6 +18,6 @@ public class StopListenerHandler implements CommandHandler
             server.stopPingListener( port );
         }
 
-        return "OK";
+        return Collections.singletonList( "OK" );
     }
 }
