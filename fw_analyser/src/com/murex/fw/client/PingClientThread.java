@@ -3,7 +3,6 @@ package com.murex.fw.client;
 import com.murex.fw.MessageType;
 
 import java.io.*;
-import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
