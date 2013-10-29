@@ -4,9 +4,9 @@ import com.murex.fw.MessageLog;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.BitSet;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Client
 {
@@ -30,7 +30,42 @@ public class Client
         controlIn = new BufferedReader( new InputStreamReader( s.getInputStream(), "UTF-8" ) );
         controlOut = new PrintWriter( new OutputStreamWriter( s.getOutputStream(), "UTF-8" ) );
 
-        testPing( 3000, 10 );
+        testPing( 7700, 10 );
+
+        reportServerLog();
+
+        s.close();
+    }
+
+    private void reportServerLog() throws IOException {
+        Pattern pattern = Pattern.compile( "^([a-zA-Z0-9]+):([0-9]+):(.*)$" );
+
+        List<String> serverMessages = readServerMessages();
+        for( String message : serverMessages ) {
+            Matcher matcher = pattern.matcher( message );
+            if( !matcher.matches() ) {
+                throw new RuntimeException( "Cannot parse message: '" + message + "'" );
+            }
+
+            String type = matcher.group( 1 );
+            long timestamp = Long.parseLong( matcher.group( 2 ) );
+            String messageText = matcher.group( 3 );
+
+            System.out.printf( "LOG %s server: %s%n", type, messageText );
+        }
+    }
+
+    private List<String> readServerMessages() throws IOException {
+        controlOut.println( "messages" );
+        controlOut.flush();
+
+        int numMessages = Integer.parseInt( controlIn.readLine() );
+        List<String> result = new ArrayList<String>( numMessages );
+        for( int i = 0 ; i < numMessages ; i++ ) {
+            result.add( controlIn.readLine() );
+        }
+
+        return result;
     }
 
     private void testPing( int startPort, int numPorts ) throws IOException {
@@ -81,6 +116,13 @@ public class Client
                 System.out.println( "Client was interrupted." );
                 e.printStackTrace();
             }
+        }
+
+        controlOut.println( "stopPingListener " + start + " " + count );
+        controlOut.flush();
+        String stopListenerReply = controlIn.readLine();
+        if( !stopListenerReply.equals( "OK" ) ) {
+            throw new RuntimeException( "Expected OK reply from server, got: " + stopListenerReply );
         }
     }
 

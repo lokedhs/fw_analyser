@@ -5,33 +5,41 @@ import com.murex.fw.MessageType;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class PingListenerThread extends Thread
 {
     private Server server;
     private ServerSocket socket;
     private int port;
+    private AtomicBoolean closed = new AtomicBoolean( false );
 
-    public PingListenerThread( Server server, ServerSocket socket ) {
+    public PingListenerThread( Server server, ServerSocket socket, int port ) {
+        super( "PingListenerThread port=" + port );
         this.server = server;
         this.socket = socket;
-        this.port = socket.getLocalPort();
+        this.port = port;
     }
 
     public void run() {
-        while( true ) {
-            try {
+        try {
+            //noinspection InfiniteLoopStatement
+            while( true ) {
                 final Socket s = socket.accept();
                 Thread t = new ServerPingThread( s );
                 t.start();
             }
-            catch( IOException e ) {
+        }
+        catch( IOException e ) {
+            if( !closed.get() ) {
                 server.getMessageLog().pushMessage( MessageType.ERROR, "failed to accept connection on port " + port );
             }
         }
     }
 
     public void stopListener() {
+        closed.set( true );
+
         interrupt();
         try {
             socket.close();

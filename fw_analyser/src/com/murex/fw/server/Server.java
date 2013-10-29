@@ -9,6 +9,7 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Server
 {
@@ -17,6 +18,7 @@ public class Server
     private int port;
     private Map<Integer, PingListenerThread> pingListeners = new HashMap<Integer, PingListenerThread>();
     private MessageLog messageLog = new MessageLog( "server" );
+    private AtomicBoolean willShutDown = new AtomicBoolean( false );
 
     static {
         HashMap<String, CommandHandler> h = new HashMap<String, CommandHandler>();
@@ -35,6 +37,7 @@ public class Server
             ServerSocket server = new ServerSocket( port );
             Thread t = new ControllerLoopThread( server );
             t.start();
+            System.out.println( "Server started" );
         }
         catch( IOException e ) {
             throw new ServerException( e );
@@ -76,7 +79,7 @@ public class Server
     public void startPingListener( int port ) throws IOException {
         synchronized( pingListeners ) {
             ServerSocket s = new ServerSocket( port );
-            PingListenerThread thread = new PingListenerThread( this, s );
+            PingListenerThread thread = new PingListenerThread( this, s, port );
             pingListeners.put( port, thread );
             thread.start();
         }
@@ -106,6 +109,8 @@ public class Server
             try {
                 Socket s = server.accept();
                 controllerLoop( s );
+                System.out.println( "Client disconnected, terminating server" );
+                System.exit( 0 );
             }
             catch( IOException e ) {
                 messageLog.pushMessage( MessageType.ERROR, "IOException in controller loop", e );
