@@ -3,7 +3,7 @@ package com.murex.fw.server;
 import java.util.Collections;
 import java.util.List;
 
-public class StopListenerHandler implements CommandHandler
+class StopListenerHandler implements CommandHandler
 {
     @Override
     public List<String> processCommand( Server server, String[] parts ) throws CommandException {

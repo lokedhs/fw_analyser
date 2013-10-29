@@ -7,7 +7,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class PingListenerThread extends Thread
+class PingListenerThread extends Thread
 {
     private Server server;
     private ServerSocket socket;

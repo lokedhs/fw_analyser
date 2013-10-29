@@ -5,7 +5,7 @@ import com.murex.fw.DiagnosticMessage;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FetchMessagesCommandHandler implements CommandHandler
+class FetchMessagesCommandHandler implements CommandHandler
 {
     @Override
     public List<String> processCommand( Server server, String[] parts ) throws CommandException {

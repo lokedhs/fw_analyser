@@ -1,6 +1,6 @@
 package com.murex.fw.server;
 
-public class CommandException extends Exception
+class CommandException extends Exception
 {
     public CommandException() {
         super();
