@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="fw_analyser:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/fw_analyser_jar</output-path>
+    <root id="archive" name="fw_analyser.jar">
+      <element id="module-output" name="fw_analyser" />
+    </root>
+  </artifact>
+</component>
