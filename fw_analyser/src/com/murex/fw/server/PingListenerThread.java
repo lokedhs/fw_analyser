@@ -32,7 +32,7 @@ class PingListenerThread extends Thread
         }
         catch( IOException e ) {
             if( !closed.get() ) {
-                server.getMessageLog().pushMessage( MessageType.ERROR, "failed to accept connection on port " + port );
+                server.getMessageLog().pushMessage( MessageType.ERROR, "failed to accept connection on port " + port, e );
             }
         }
     }
@@ -45,7 +45,7 @@ class PingListenerThread extends Thread
             socket.close();
         }
         catch( IOException e ) {
-            server.getMessageLog().pushMessage( MessageType.ERROR, "exception when closing listener on port + " + port );
+            server.getMessageLog().pushMessage( MessageType.ERROR, "exception when closing listener on port + " + port, e );
         }
     }
 
